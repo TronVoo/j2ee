@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Home</title>
+    <style th:fragment="extra-styles">
+        .hero-section {
+            text-align: center;
+            color: #333;
+            animation: fadeIn 0.8s ease-in;
+            padding: 3rem 0;
+        }
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #FF1493;
+        }
+        .hero-section p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+        .hero-section .subtitle {
+            font-size: 1.5rem;
+            color: #FF69B4;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        .btn-custom {
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .btn-books {
+            background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
+            color: white;
+        }
+        .btn-books:hover {
+            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+        }
+        .features {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .feature-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 200px;
+        }
+        .feature-box i {
+            font-size: 2rem;
+            color: #FF1493;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="hero-section">
+            <h1>📚 Quản Lý Sách</h1>
+            <p>Hệ thống quản lý sách hiện đại và thân thiện</p>
+            <div class="subtitle">Tổ chức thư viện của bạn một cách hiệu quả</div>
+            <a th:href="@{/books}" class="btn btn-custom btn-books">🚀 Bắt Đầu Ngay</a>
+            
+            <div class="features">
+                <div class="feature-box">
+                    <div><i class="fas fa-plus-circle"></i></div>
+                    <div>Thêm Sách</div>
+                    <small>Quản lý thư viện dễ dàng</small>
+                </div>
+                <div class="feature-box">
+                    <div><i class="fas fa-edit"></i></div>
+                    <div>Chỉnh Sửa</div>
+                    <small>Cập nhật thông tin nhanh</small>
+                </div>
+                <div class="feature-box">
+                    <div><i class="fas fa-trash-alt"></i></div>
+                    <div>Xóa</div>
+                    <small>Loại bỏ sách không cần thiết</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
