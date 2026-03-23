@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{product/_layout}">
+
+<div layout:fragment="content">
+    <style>
+        /* Tùy chỉnh màu sắc & hiệu ứng */
+        .text-pink { color: var(--dark-pink) !important; }
+        .bg-pink-light { background-color: #fff5f7; }
+        
+        .btn-pink { 
+            background-color: var(--main-pink); 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            padding: 8px 20px;
+            transition: 0.3s;
+        }
+        .btn-pink:hover { background-color: var(--dark-pink); color: white; transform: scale(1.05); }
+
+        .filter-card { border-radius: 15px; border: 1px solid #fce4ec; }
+        
+        .table-container { border-radius: 15px; overflow: hidden; border: 1px solid #fce4ec; background: white; }
+        .table thead { background-color: #fce4ec; color: #d81b60; }
+        
+        .product-img { 
+            transition: transform 0.3s; 
+            cursor: pointer; 
+            border: 2px solid #fff;
+        }
+        .product-img:hover { transform: scale(1.2); }
+
+        .badge-category {
+            background-color: #fce4ec;
+            color: #ad1457;
+            border-radius: 10px;
+            padding: 5px 12px;
+            font-weight: 500;
+        }
+
+        .pagination .btn-outline-primary {
+            border-color: var(--main-pink);
+            color: var(--main-pink);
+            border-radius: 10px;
+        }
+        .pagination .btn-outline-primary:hover:not(.disabled) {
+            background-color: var(--main-pink);
+            color: white;
+        }
+    </style>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-pink"><i class="bi bi-stars"></i> Danh mục sản phẩm</h2>
+        <a th:href="@{/products/create}" class="btn btn-pink shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Thêm mới
+        </a>
+    </div>
+
+    <div class="card filter-card shadow-sm mb-4">
+        <div class="card-body p-4">
+            <form method="get" th:action="@{/products}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Tên sản phẩm</label>
+                    <input type="text" name="keyword" class="form-control" th:value="${keyword}" 
+                           placeholder="Tìm kiếm sản phẩm..." style="border-radius: 10px;">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Danh mục</label>
+                    <select name="categoryId" class="form-select" style="border-radius: 10px;">
+                        <option value="">Tất cả</option>
+                        <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                                th:selected="${categoryId != null and categoryId == c.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Sắp xếp</label>
+                    <select name="sort" class="form-select" style="border-radius: 10px;">
+                        <option value="">Mặc định</option>
+                        <option value="priceAsc" th:selected="${sort == 'priceAsc'}">Giá: Thấp đến Cao</option>
+                        <option value="priceDesc" th:selected="${sort == 'priceDesc'}">Giá: Cao đến Thấp</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-pink w-100">
+                        <i class="bi bi-filter"></i> Lọc
+                    </button>
+                    <a th:href="@{/products}" class="btn btn-light border w-100" style="border-radius: 50px;">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-container shadow-sm p-2">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+            <tr>
+                <th class="ps-4">ID</th>
+                <th>Ảnh</th>
+                <th>Sản phẩm</th>
+                <th>Giá bán</th>
+                <th>Danh mục</th>
+                <th class="text-center">Thêm vào giỏ</th>
+                <th class="text-center pe-4">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${products.isEmpty()}">
+                <td colspan="7" class="text-center py-5 text-muted bg-pink-light">
+                    <i class="bi bi-heart-break fs-1 d-block mb-2"></i>
+                    Không có sản phẩm nào phù hợp yêu cầu.
+                </td>
+            </tr>
+            <tr th:each="p : ${products}">
+                <td class="ps-4 fw-bold text-muted" th:text="${'#' + p.id}"></td>
+                <td>
+                    <img th:if="${p.image != null and !p.image.isEmpty()}"
+                         th:src="@{'/images/' + ${p.image}}"
+                         width="55" height="55"
+                         class="product-img shadow-sm rounded-circle"
+                         alt="Product">
+                    <div th:unless="${p.image != null and !p.image.isEmpty()}" 
+                         class="bg-light d-flex align-items-center justify-content-center rounded-circle border" 
+                         style="width:55px; height:55px;">
+                        <i class="bi bi-image text-muted"></i>
+                    </div>
+                </td>
+                <td>
+                    <div class="fw-bold text-dark" th:text="${p.name}"></div>
+                </td>
+                <td>
+                    <span class="fw-bold text-pink" 
+                          th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                </td>
+                <td>
+                    <span class="badge-category" th:text="${p.category != null ? p.category.name : 'Chưa phân loại'}"></span>
+                </td>
+                <td class="text-center">
+                    <form th:action="@{/cart/add}" method="post" class="d-inline-flex gap-1 align-items-center">
+                        <input type="hidden" name="productId" th:value="${p.id}">
+                        <input type="number" name="quantity" value="1" min="1" class="form-control form-control-sm text-center" style="width:50px; border-radius: 8px;">
+                        <button type="submit" class="btn btn-sm btn-outline-pink border-0" title="Thêm vào giỏ">
+                            <i class="bi bi-bag-plus-fill fs-5"></i>
+                        </button>
+                    </form>
+                </td>
+                <td class="text-center pe-4">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a th:href="@{/products/edit/{id}(id=${p.id})}" class="btn btn-sm btn-light text-warning" title="Sửa">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a th:href="@{/products/delete/{id}(id=${p.id})}" class="btn btn-sm btn-light text-danger" 
+                           onclick="return confirm('Xóa sản phẩm này khỏi hệ thống?')" title="Xóa">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 pagination" th:if="${totalPages > 0}">
+        <a class="btn btn-outline-primary shadow-sm" th:classappend="${!hasPrevious} ? 'disabled'"
+           th:href="@{/products(page=${currentPage-1}, keyword=${keyword}, categoryId=${categoryId}, sort=${sort})}">
+            <i class="bi bi-chevron-left"></i> Trước
+        </a>
+        
+        <span class="text-muted small fw-bold">Trang <span class="text-pink" th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+
+        <a class="btn btn-outline-primary shadow-sm" th:classappend="${!hasNext} ? 'disabled'"
+           th:href="@{/products(page=${currentPage+1}, keyword=${keyword}, categoryId=${categoryId}, sort=${sort})}">
+            Sau <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
+</html>

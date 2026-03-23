@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{product/_layout}">
+
+<div layout:fragment="content">
+    <style>
+        .breadcrumb-item a { color: var(--main-pink); text-decoration: none; }
+        .card-custom { border-radius: 20px; border: none; overflow: hidden; }
+        .pink-header { background: linear-gradient(45deg, #ff85a1, #f06292); color: white; }
+        .form-label { color: #555; font-size: 0.9rem; }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--main-pink);
+            box-shadow: 0 0 0 0.25rem rgba(255, 133, 161, 0.25);
+        }
+        .upload-zone {
+            border: 2px dashed #fce4ec;
+            background-color: #fffafb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-zone:hover { border-color: var(--main-pink); background-color: #fff5f7; }
+        .btn-save { background-color: var(--main-pink); color: white; border-radius: 12px; border: none; transition: 0.3s; }
+        .btn-save:hover { background-color: var(--dark-pink); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,133,161,0.4); }
+        .btn-cancel { border-radius: 12px; color: #888; }
+    </style>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/products}"><i class="bi bi-house-heart"></i> Sản phẩm</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+                </ol>
+            </nav>
+
+            <div class="card card-custom shadow-sm">
+                <div class="card-header pink-header py-3">
+                    <h5 class="mb-0 fw-bold text-center"><i class="bi bi-magic me-2"></i>TẠO SẢN PHẨM MỚI</h5>
+                </div>
+                <div class="card-body p-5 bg-white">
+                    <form th:action="@{/products/create}"
+                          th:object="${product}"
+                          method="post"
+                          enctype="multipart/form-data">
+                        
+                        <div class="row g-4">
+                            <div class="col-md-7">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-pencil-square me-1"></i> Tên sản phẩm</label>
+                                    <input th:field="*{name}" class="form-control form-control-lg" placeholder="Ví dụ: Son môi cao cấp..."
+                                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" style="border-radius: 12px;">
+                                    <div class="invalid-feedback" th:errors="*{name}"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold"><i class="bi bi-tag me-1"></i> Giá niêm yết</label>
+                                        <div class="input-group">
+                                            <input th:field="*{price}" type="number" class="form-control" placeholder="0"
+                                                   th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'" style="border-radius: 12px 0 0 12px;">
+                                            <span class="input-group-text bg-light text-muted" style="border-radius: 0 12px 12px 0;">đ</span>
+                                            <div class="invalid-feedback" th:errors="*{price}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold"><i class="bi bi-collection me-1"></i> Danh mục</label>
+                                        <select th:field="*{category.id}" class="form-select"
+                                                th:classappend="${#fields.hasErrors('category.id')} ? 'is-invalid'" style="border-radius: 12px;">
+                                            <option value="">-- Chọn loại --</option>
+                                            <option th:each="c : ${categories}"
+                                                    th:value="${c.id}"
+                                                    th:text="${c.name}">
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback" th:errors="*{category.id}"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold"><i class="bi bi-image me-1"></i> Hình ảnh đại diện</label>
+                                <div class="upload-zone rounded-4 p-4 text-center mb-3 border-pink">
+                                    <i class="bi bi-cloud-plus-fill fs-1" style="color: var(--main-pink);"></i>
+                                    <p class="mb-1 fw-semibold text-muted">Kéo thả hoặc nhấn để tải ảnh</p>
+                                    <p class="small text-muted" style="font-size: 0.7rem;">Hỗ trợ: JPG, PNG, WEBP</p>
+                                    <input type="file" name="imageProduct" class="form-control mt-2 shadow-sm" id="imageInput" style="border-radius: 10px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 d-flex justify-content-center gap-3">
+                            <a th:href="@{/products}" class="btn btn-light btn-cancel px-5 py-2 border">
+                                <i class="bi bi-x-lg me-1"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-save px-5 py-2 fw-bold shadow-sm">
+                                <i class="bi bi-check-lg me-1"></i> LƯU THÔNG TIN
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <p class="text-center mt-4 text-muted small">Mọi thông tin sản phẩm có thể thay đổi sau khi lưu.</p>
+        </div>
+    </div>
+</div>
+</html>
